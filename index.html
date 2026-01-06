@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mj-Shop | Shopping Mall</title>
+<style>
+/* Reset & dasar */
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+body{background:#f3f3f3;color:#333;overflow-x:hidden;}
+header{
+  position:fixed;top:0;left:0;right:0;
+  background:linear-gradient(90deg,#ffb347,#ffcc33);
+  padding:10px 15px;
+  text-align:center;z-index:999;
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+}
+header h2{
+  font-size:24px;
+  font-weight:900;
+  margin-bottom:6px;
+  cursor:pointer;
+}
+nav{
+  display:flex;justify-content:center;gap:8px;flex-wrap:nowrap;overflow-x:auto;
+}
+nav a{
+  padding:5px 10px;
+  border-radius:6px;text-decoration:none;color:#222;font-weight:bold;font-size:14px;white-space:nowrap;transition:0.3s;
+}
+nav a:hover{background:linear-gradient(90deg,#ff9933,#ffcc33);color:#fff;transform:scale(1.05);}
+
+/* Section fix header */
+section{
+  display:none;padding:100px 20px 120px;
+  max-width:1200px;margin:0 auto;transition:0.5s;
+}
+.active{display:block;}
+h3{margin-bottom:12px;}
+h4{margin:20px 0 10px;}
+p{margin-bottom:10px;line-height:1.5;}
+
+/* Slider & Card */
+.slider{display:flex;overflow-x:auto;scroll-behavior:smooth;gap:16px;padding:10px 0;}
+.slider::-webkit-scrollbar{height:6px;}
+.slider::-webkit-scrollbar-thumb{background:#ff9933;border-radius:3px;}
+.card{background:#fff;padding:10px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15);min-width:180px;flex:0 0 auto;transition:0.3s;position:relative;cursor:pointer;}
+.card:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+.card img{width:100%;height:150px;object-fit:cover;border-radius:8px;transition:0.3s;}
+.card img:hover{transform:scale(1.05);}
+.btn-order{background:red;color:#fff;padding:6px 10px;border-radius:6px;border:none;cursor:pointer;transition:0.3s;margin-top:4px;}
+.btn-order:hover{opacity:.85;transform:scale(1.05);}
+
+/* Admin */
+.admin{background:#fff3e0;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;}
+#dropZone{border:2px dashed #ff9933;padding:12px;text-align:center;margin-top:6px;border-radius:8px;cursor:pointer;transition:0.3s;}
+#dropZone.hover{background:#ffe0b2;}
+#preview{width:100%;height:140px;object-fit:cover;margin-top:6px;border-radius:6px;border:1px dashed #ff9933;}
+input,textarea,button{width:100%;padding:8px;margin-top:6px;font-size:13px;}
+button{cursor:pointer;background:#ff9933;border:none;border-radius:6px;transition:0.3s;font-size:14px;color:#fff;}
+button:hover{background:#ff7f50;color:#fff;transform:scale(1.05);}
+
+/* Footer & BioLink */
+footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(90deg,#ffb347,#ffcc33);padding:10px;text-align:center;font-size:13px;box-shadow:0 -2px 6px rgba(0,0,0,0.12);}
+.bioLink{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center;font-size:12px;}
+.bioLink a{padding:6px 10px;border-radius:50px;color:#fff;font-weight:bold;text-decoration:none;display:inline-block;transition:0.3s;}
+.bioLink a:hover{transform:scale(1.1);opacity:0.85;}
+.bioLink .instagram{background:#E1306C;}
+.bioLink .tiktok{background:#000;}
+.bioLink .wa{background:#25D366;}
+.bioLink .facebook{background:#1877F2;}
+
+/* popup */
+#popup{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:1000;}
+#popup .content{background:#fff;padding:20px;border-radius:12px;max-width:500px;width:90%;max-height:80%;overflow:auto;position:relative;}
+#popup .close{position:absolute;top:8px;right:12px;font-size:20px;cursor:pointer;}
+
+/* Responsive */
+@media(max-width:768px){
+  .card{min-width:140px}.card img{height:130px}
+  header h2{font-size:20px;} section{padding-top:90px;}
+}
+@media(min-width:1024px){
+  .card{min-width:200px}.card img{height:220px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<h2 onclick="showPage('home')">Mj-Shop</h2>
+<nav>
+<a onclick="showPage('home')">Home</a>
+<a onclick="showPage('produk')">Produk</a>
+<a onclick="showPage('artikel')">Artikel</a>
+<a onclick="showPage('testimoni')">Testimoni</a>
+<a onclick="showPage('admin')">Admin</a>
+</nav>
+</header>
+
+<section id="home" class="active">
+<h3>Mj-Shop</h3>
+<p>Belanja cepat & nyaman! Produk berkualitas, harga bersaing, dan order gampang langsung via WhatsApp. Temukan perlengkapan rumah, fashion, gadget, dan kebutuhan sehari-hari lainnya di Mj-Shop.</p>
+
+<h4>Produk Terbaru</h4>
+<div class="slider" id="homeProduk"></div>
+
+<h4>Artikel Terbaru</h4>
+<div class="slider" id="homeArtikel"></div>
+
+<h4>Testimoni Pelanggan</h4>
+<div class="slider" id="homeTestimoni"></div>
+
+<h4>Ikuti Kami</h4>
+<div class="bioLink">
+<a href="https://instagram.com/mjshop" target="_blank" class="instagram">Instagram</a>
+<a href="https://www.tiktok.com/@mjshop" target="_blank" class="tiktok">TikTok</a>
+<a href="https://wa.me/6285691451094" target="_blank" class="wa">WhatsApp</a>
+<a href="https://facebook.com/mjshop" target="_blank" class="facebook">Facebook</a>
+</div>
+</section>
+
+<section id="produk"><h3>Produk</h3><div class="slider" id="produkList"></div></section>
+<section id="artikel"><h3>Artikel</h3><div class="slider" id="artikelList"></div></section>
+<section id="testimoni"><h3>Testimoni</h3><div class="slider" id="testimoniList"></div></section>
+
+<section id="admin">
+<h3>Admin Panel 🔐</h3>
+<div id="loginBox">
+<input id="email" placeholder="Email admin">
+<input id="password" type="password" placeholder="Password">
+<button onclick="loginAdmin()">Login</button>
+</div>
+<div id="adminBox" style="display:none">
+<div class="admin">
+<h4>Produk</h4>
+<input id="pnama" placeholder="Nama produk">
+<input id="pgambar" placeholder="Link gambar opsional">
+<div id="dropZone">Seret & Lepas file disini atau klik</div>
+<input type="file" id="pfile" accept="image/png, image/jpeg" style="display:none" onchange="previewFile()">
+<img id="preview" src="" alt="Preview">
+<button onclick="tambahProduk()">Tambah Produk</button>
+</div>
+<div class="admin">
+<h4>Artikel</h4>
+<input id="ajudul" placeholder="Judul artikel">
+<textarea id="aisi" placeholder="Isi artikel"></textarea>
+<button onclick="tambahArtikel()">Tambah Artikel</button>
+</div>
+<div class="admin">
+<h4>Testimoni</h4>
+<input id="tnama" placeholder="Nama pelanggan">
+<textarea id="tisi" placeholder="Isi testimoni"></textarea>
+<button onclick="tambahTestimoni()">Tambah Testimoni</button>
+</div>
+<button onclick="logoutAdmin()">Logout</button>
+</div>
+</section>
+
+<footer>© Mj-Shop • Order via WhatsApp</footer>
+
+<div id="popup"><div class="content"><span class="close" onclick="closePopup()">✖</span><div id="popupContent"></div></div></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyD3OBIuIqu5C9zCO_CexO4wIVLjX1Hf3vU",
+  authDomain: "mj-shop-2d1e0.firebaseapp.com",
+  projectId: "mj-shop-2d1e0",
+  storageBucket: "mj-shop-2d1e0.appspot.com",
+  messagingSenderId: "592598529202",
+  appId: "1:592598529202:web:98f1777ca3cda7e69a45ab",
+  measurementId: "G-2KQK7G4V03"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Navigation
+window.showPage=id=>{
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+};
+
+// Admin Login
+window.loginAdmin=()=>signInWithEmailAndPassword(auth,email.value,password.value).catch(e=>alert(e.message));
+window.logoutAdmin=()=>signOut(auth);
+let isAdmin=false;
+onAuthStateChanged(auth,user=>{
+  loginBox.style.display=user?"none":"block";
+  adminBox.style.display=user?"block":"none";
+  isAdmin=!!user;
+});
+
+// File Upload Preview
+const dropZone=document.getElementById("dropZone");
+const pfile=document.getElementById("pfile");
+const preview=document.getElementById("preview");
+dropZone.addEventListener("click",()=>pfile.click());
+dropZone.addEventListener("dragover",e=>{e.preventDefault();dropZone.classList.add("hover");});
+dropZone.addEventListener("dragleave",()=>dropZone.classList.remove("hover"));
+dropZone.addEventListener("drop",e=>{
+  e.preventDefault();dropZone.classList.remove("hover");
+  if(e.dataTransfer.files.length>0){pfile.files=e.dataTransfer.files;previewFile();}
+});
+window.previewFile=()=>{const file=pfile.files[0];if(file){const reader=new FileReader();reader.onload=e=>preview.src=e.target.result;reader.readAsDataURL(file);}else preview.src="";};
+
+// Tambah Data
+window.tambahProduk=async()=>{
+  let nama=pnama.value.trim();
+  let gambar=pgambar.value.trim();
+  if(pfile.files[0]){
+    const file=pfile.files[0];
+    const uniqName=Date.now()+'-'+file.name;
+    const storageRef=ref(storage,'produk/'+uniqName);
+    await uploadBytes(storageRef,file);
+    gambar=await getDownloadURL(storageRef);
+  }
+  if(!nama||!gambar){alert("Isi nama atau pilih gambar!"); return preview.src="";}
+  await addDoc(collection(db,"produk"),{nama,gambar,created:Date.now()});
+  pnama.value=pgambar.value=""; pfile.value=""; preview.src="";
+}
+window.tambahArtikel=async()=>{if(!ajudul.value.trim()||!aisi.value.trim()){alert("Isi lengkap artikel!"); return;} await addDoc(collection(db,"artikel"),{judul:ajudul.value.trim(),isi:aisi.value.trim(),created:Date.now()}); ajudul.value=aisi.value="";}
+window.tambahTestimoni=async()=>{if(!tnama.value.trim()||!tisi.value.trim()){alert("Isi lengkap testimoni!"); return;} await addDoc(collection(db,"testimoni"),{nama:tnama.value.trim(),isi:tisi.value.trim(),created:Date.now()}); tnama.value=tisi.value="";}
+
+// Popup
+const popup=document.getElementById('popup');
+const popupContent=document.getElementById('popupContent');
+window.showPopup=data=>{
+  popupContent.innerHTML='';
+  if(data.gambar)popupContent.innerHTML+=`<img src="${data.gambar}" style="width:100%;border-radius:8px;margin-bottom:6px;">`;
+  if(data.nama)popupContent.innerHTML+=`<b>${data.nama}</b><p>${data.isi||''}</p>`;
+  if(data.judul)popupContent.innerHTML+=`<b>${data.judul}</b><p>${data.isi}</p>`;
+  popup.style.display='flex';
+};
+window.closePopup=()=>{popup.style.display='none';};
+window.addEventListener('keydown',e=>{if(e.key==='Escape') closePopup();});
+
+// Render Slider
+const renderSlider=(snap,el,type,limitCount=null)=>{
+  el.innerHTML="";
+  let items=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(limitCount)items=items.slice(0,limitCount);
+  items.forEach(data=>{
+    let card=document.createElement('div');card.className='card';
+    if(type==='produk'){
+      card.innerHTML=`<img src="${data.gambar}"><b>${data.nama}</b><br><a target="_blank" href="https://wa.me/6285691451094?text=Order ${encodeURIComponent(data.nama)}"><button class="btn-order">Order</button></a>`;
+      card.onclick=()=>showPopup(data);
+    }
+    if(type==='artikel'){
+      card.innerHTML=`<b>${data.judul}</b><p>${data.isi.length>100?data.isi.slice(0,100)+'...':data.isi}</p>`;
+      card.onclick=()=>showPopup(data);
+    }
+    if(type==='testimoni'){
+      card.innerHTML=`<b>${data.nama}</b><p>${data.isi.length>150?data.isi.slice(0,150)+'...':data.isi}</p>`;
+    }
+    if(isAdmin){
+      let del=document.createElement('span');
+      del.innerHTML='✖';
+      del.style.cssText='position:absolute;top:2px;right:4px;font-size:12px;cursor:pointer;color:red;';
+      del.onclick=async(e)=>{
+        e.stopPropagation();
+        if(confirm("Hapus item ini?")) await deleteDoc(doc(db,type,data.id));
+      };
+      card.appendChild(del);
+    }
+    el.appendChild(card);
+  });
+};
+
+// Firestore Listeners
+onSnapshot(query(collection(db,"produk"),orderBy('created','desc')),snap=>{renderSlider(snap,homeProduk,'produk',10);renderSlider(snap,produkList,'produk');});
+onSnapshot(query(collection(db,"artikel"),orderBy('created','desc')),snap=>{renderSlider(snap,homeArtikel,'artikel',3);renderSlider(snap,artikelList,'artikel');});
+onSnapshot(query(collection(db,"testimoni"),orderBy('created','desc')),snap=>{renderSlider(snap,homeTestimoni,'testimoni');renderSlider(snap,testimoniList,'testimoni');});
+
+// Slider scroll mouse wheel
+document.querySelectorAll('.slider').forEach(sl=>{
+  sl.addEventListener('wheel', e=>{
+    e.preventDefault();
+    sl.scrollLeft += e.deltaY;
+  });
+});
+</script>
+</body>
+</html>
